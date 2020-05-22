@@ -42,6 +42,11 @@ public class PlayerMovement8 : MonoBehaviour
             characterController.Move(new Vector3(0, jumpSpeed * Time.deltaTime, 0));
         }
 
+        if (Input.GetButton("Crouch")) {
+            // Debug.Log("Input.GetButton(\"Jump\")");
+            characterController.Move(new Vector3(0, -jumpSpeed * Time.deltaTime, 0));
+        }
+
         // if (characterController.isGrounded)
         // {
         //     if (Input.GetButton("Jump"))
