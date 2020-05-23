@@ -69,7 +69,7 @@ public class PlayerMovement8 : MonoBehaviour
 
         float horizontal = Input.GetAxis("Horizontal") * MovementSpeed;
         float vertical = Input.GetAxis("Vertical") * MovementSpeed;
-        characterController.Move((Vector3.right * horizontal + Vector3.forward * vertical) * Time.deltaTime);
+        characterController.Move((Camera.main.transform.right * horizontal + Camera.main.transform.forward * vertical) * Time.deltaTime);
 
 #region Mouse Look Controls
 
