@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerMovement8 : MonoBehaviour
 {
     private Vector3 moveDirection = Vector3.zero;
-    public float JumpSpeed = 10.0F;
 
     // Start is called before the first frame update
     void Start()
@@ -16,10 +15,11 @@ public class PlayerMovement8 : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateHighlightedObjectUnderView();
-        UpdateFlightControls();
+        // UpdateFlightControls();
         UpdateLookMovement();
-        UpdateWorkdMovement();
+        UpdateWorldMovement();
+        // UpdateGravityPlayerMomentum();
+        // UpdateZeroGravityPlayerMovement();
 
         // if (Input.GetKeyDown(KeyCode.Escape)) { // True only once on transition to pressed
         //     Debug.Log("Input.GetKeyDOWN(KeyCode.Escape)");
@@ -38,7 +38,7 @@ public class PlayerMovement8 : MonoBehaviour
         //     if (Input.GetButton("Jump"))
         //     {
         //         characterController.Move(new Vector3(0, JumpSpeed * Time.deltaTime, 0));
-        //         // moveDirection.y = JumpSpeed;
+        //         // PlayerMomentum.y = JumpSpeed;
         //     }
         // }
 
@@ -49,19 +49,56 @@ public class PlayerMovement8 : MonoBehaviour
         //     characterController.Move(new Vector3(0, velocity, 0));
         // }
 
-        // moveDirection.y -= gravity * Time.deltaTime;
+        // PlayerMomentum.y -= gravity * Time.deltaTime;
 
         // characterController.transform.rotation
 
     }
 
-#region Gravity
+#region Player Momentum, Gravity, Jumping
 
     public float Gravity = 9.8f;
-    private float velocity = 0;
+    // private float velocity = 0;
+    public float JumpSpeed = 10.0F;
+    private Vector3 PlayerMomentum = Vector3.zero;
 
-    void UpdateGravity() {
+    void UpdateGravityPlayerMomentum() {
+        if (characterController.isGrounded) {
+            // PlayerMomentum.y = 0;
 
+            if (Input.GetButton("Jump")) {
+                PlayerMomentum.y += JumpSpeed;
+            }
+        }
+        else {
+            PlayerMomentum.y -= Gravity * Time.deltaTime;
+        }
+
+        characterController.Move(PlayerMomentum * Time.deltaTime);
+    }
+
+#endregion
+
+#region Zero-gravity player Momentum
+
+    private Vector3 SpacePlayerMomentum = Vector3.zero;
+    private float JetpackSpeed = 5.0f;
+
+    void UpdateZeroGravityPlayerMovement() {
+
+        if (Input.GetButton("Jump")) {
+            SpacePlayerMomentum.y += JetpackSpeed * Time.deltaTime;
+        }
+
+        if (Input.GetButton("Crouch")) {
+            SpacePlayerMomentum.y -= JetpackSpeed * Time.deltaTime;
+        }
+
+        float horizontal = Input.GetAxis("Horizontal") * JetpackSpeed;
+        float vertical = Input.GetAxis("Vertical") * JetpackSpeed;
+        SpacePlayerMomentum += ((Camera.main.transform.right * horizontal) + (Camera.main.transform.forward * vertical)) * Time.deltaTime;
+
+        characterController.Move(SpacePlayerMomentum * Time.deltaTime);
     }
 
 #endregion
@@ -71,7 +108,7 @@ public class PlayerMovement8 : MonoBehaviour
     private CharacterController characterController;
     public float MovementSpeed = 3;
 
-    void UpdateWorkdMovement() {
+    void UpdateWorldMovement() {
 
         float horizontal = Input.GetAxis("Horizontal") * MovementSpeed;
         float vertical = Input.GetAxis("Vertical") * MovementSpeed;
@@ -115,36 +152,6 @@ public class PlayerMovement8 : MonoBehaviour
         if (Input.GetButton("Crouch")) {
             // Debug.Log("Input.GetButton(\"Jump\")");
             characterController.Move(new Vector3(0, -10.0f * Time.deltaTime, 0));
-        }
-
-    }
-
-#endregion
-
-#region Highlight target object
-
-    private Renderer CurrentRenderer;
-    public float TouchDistance = 6.0f;
-
-    void UpdateHighlightedObjectUnderView()
-    {
-
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)); // Point at center of view
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit) && hit.distance < TouchDistance) {
-            Renderer renderer = hit.collider.gameObject.GetComponent<Renderer>();
-
-            if (renderer != CurrentRenderer) {
-                if (CurrentRenderer != null) {
-                    CurrentRenderer.material.color = Color.white;
-                }
-                renderer.material.color = Color.yellow;
-                CurrentRenderer = renderer;
-            }
-        }
-        else if (CurrentRenderer != null) {
-            CurrentRenderer.material.color = Color.white;
-            CurrentRenderer = null;
         }
 
     }
