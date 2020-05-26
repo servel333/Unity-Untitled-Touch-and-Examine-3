@@ -5,9 +5,9 @@ using UnityEngine;
 public class TouchAndExamineTarget : MonoBehaviour
 {
 
-    private Renderer CurrentRenderer;
     public float TouchDistance = 6.0f;
     public Camera PlayerCamera;
+    private Renderer PreviousRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -26,17 +26,28 @@ public class TouchAndExamineTarget : MonoBehaviour
         if (Physics.Raycast(ray, out hit) && hit.distance < TouchDistance) {
             Renderer renderer = hit.collider.gameObject.GetComponent<Renderer>();
 
-            if (renderer != CurrentRenderer) {
-                if (CurrentRenderer != null) {
-                    CurrentRenderer.material.color = Color.white;
-                }
-                renderer.material.color = Color.yellow;
-                CurrentRenderer = renderer;
+            if (renderer != PreviousRenderer) {
+                Deselect(PreviousRenderer);
+                Select(renderer);
+                PreviousRenderer = renderer;
             }
         }
-        else if (CurrentRenderer != null) {
-            CurrentRenderer.material.color = Color.white;
-            CurrentRenderer = null;
+        else if (PreviousRenderer != null) {
+            Deselect(PreviousRenderer);
+            PreviousRenderer = null;
         }
     }
+
+    void Select(Renderer target) {
+        if (target != null) {
+            target.material.color = Color.yellow
+        }
+    }
+
+    void Deselect(Renderer target) {
+        if (target != null) {
+            target.material.color = Color.white
+        }
+    }
+
 }
