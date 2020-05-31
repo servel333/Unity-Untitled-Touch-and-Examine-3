@@ -7,6 +7,7 @@ public class TouchAndExamineTarget : MonoBehaviour
 
     public float TouchDistance = 6.0f;
     public Camera PlayerCamera;
+    private GameObject SelectedGameObject;
     private Renderer PreviousRenderer;
 
     // Start is called before the first frame update
@@ -21,32 +22,42 @@ public class TouchAndExamineTarget : MonoBehaviour
             PlayerCamera = Camera.main;
         }
 
+        // if (SelectedGameObject == null) {
+        //     if (Input.GetKeyDown("E")) {
+
+        //     }
+        //     else {
+        //         HighlightObjectUnderCenterOfView();
+        //     }
+        // }
+
         Ray ray = PlayerCamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)); // Point at center of view
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit) && hit.distance < TouchDistance) {
             Renderer renderer = hit.collider.gameObject.GetComponent<Renderer>();
 
             if (renderer != PreviousRenderer) {
-                Deselect(PreviousRenderer);
-                Select(renderer);
+                Unhighlight(PreviousRenderer);
+                Highlight(renderer);
                 PreviousRenderer = renderer;
             }
         }
         else if (PreviousRenderer != null) {
-            Deselect(PreviousRenderer);
+            Unhighlight(PreviousRenderer);
             PreviousRenderer = null;
         }
+
     }
 
-    void Select(Renderer target) {
+    void Highlight(Renderer target) {
         if (target != null) {
-            target.material.color = Color.yellow
+            target.material.color = Color.yellow;
         }
     }
 
-    void Deselect(Renderer target) {
+    void Unhighlight(Renderer target) {
         if (target != null) {
-            target.material.color = Color.white
+            target.material.color = Color.white;
         }
     }
 
