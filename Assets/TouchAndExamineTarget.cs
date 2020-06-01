@@ -6,7 +6,7 @@ public class TouchAndExamineTarget : MonoBehaviour
 {
 
     public float TouchDistance = 6.0f;
-    public Camera PlayerCamera;
+    public Camera targetCamera;
     private GameObject SelectedGameObject;
     private Renderer PreviousRenderer;
 
@@ -18,8 +18,8 @@ public class TouchAndExamineTarget : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (PlayerCamera == null) {
-            PlayerCamera = Camera.main;
+        if (targetCamera == null) {
+            targetCamera = Camera.main;
         }
 
         // if (SelectedGameObject == null) {
@@ -31,7 +31,7 @@ public class TouchAndExamineTarget : MonoBehaviour
         //     }
         // }
 
-        Ray ray = PlayerCamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)); // Point at center of view
+        Ray ray = targetCamera.ViewportPointToRay(new Vector3(0.5F, 0.5F, 0)); // Point at center of view
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit) && hit.distance < TouchDistance) {
             Renderer renderer = hit.collider.gameObject.GetComponent<Renderer>();
