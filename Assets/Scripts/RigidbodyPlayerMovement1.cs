@@ -13,11 +13,13 @@ public class RigidbodyPlayerMovement1 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (targetRigidbody == null) {
+        if (targetRigidbody == null)
+        {
             targetRigidbody = GetComponent<Rigidbody>();
         }
 
-        if (directionObject == null) {
+        if (directionObject == null)
+        {
             directionObject = gameObject;
         }
     }
@@ -57,6 +59,16 @@ public class RigidbodyPlayerMovement1 : MonoBehaviour
             //     targetRigidbody.velocity *= 0.99f;
             // }
             // ##### Method 2
+
+            // ##### Method 3
+            // if(Mathf.Abs(rigidbody.velocity.x) > maxSpeed || Mathf.Abs(rigidbody.velocity.y) > maxSpeed)
+            // {
+            //     // clamp velocity:
+            //     Vector3 newVelocity = rigidbody.velocity.normalized;
+            //     newVelocity *= maxSpeed;
+            //     rigidbody.velocity = newVelocity;
+            // }
+            // ##### Method 3
         }
     }
 }
